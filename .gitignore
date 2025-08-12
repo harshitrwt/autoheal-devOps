@@ -1,1 +1,2 @@
-/scripts/config.env
+/scripts/.env
+node_modules/
