@@ -1,0 +1,21 @@
+# deploying to this incase of a failure to cloud one
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: autohealing-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: autohealing-app
+  template:
+    metadata:
+      labels:
+        app: autohealing-app
+    spec:
+      containers:
+        - name: autohealing-app
+          image: "your-dockerhub-username/autohealing-app:latest" 
+          ports:
+            - containerPort: 80

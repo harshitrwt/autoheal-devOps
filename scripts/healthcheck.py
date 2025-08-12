@@ -1,69 +1,47 @@
-import os
+#!/usr/bin/env python3
 import requests
-import boto3
-from dotenv import load_dotenv
+import os
 
-load_dotenv("config.env")
+CLOUDFLARE_API_TOKEN = "YOUR_CLOUDFLARE_API_TOKEN"  # Generate in Cloudflare Dashboard to My Profile to API Tokens
+ZONE_ID = "YOUR_CLOUDFLARE_ZONE_ID"  # in Cloudflare Dashboard under domain's settings
+RECORD_ID = "YOUR_DNS_RECORD_ID"     # Use Cloudflare API or dashboard to get it
+DNS_NAME = "yourdomain.com"          # domain or subdomain you want to switch
+EC2_IP = "YOUR_EC2_PUBLIC_IP"        # Public IP of EC2
+LOCAL_IP = "YOUR_LOCAL_PUBLIC_IP"    # Public IP from home network or tunnel
+EC2_HEALTH_URL = f"http://{EC2_IP}"  # Endpoint to check (HTTP or HTTPS)
 
-AWS_REGION = os.getenv("AWS_REGION")
-PRIMARY_INSTANCE_ID = os.getenv("PRIMARY_INSTANCE_ID")
-BACKUP_INSTANCE_ID = os.getenv("BACKUP_INSTANCE_ID")
-HOSTED_ZONE_ID = os.getenv("HOSTED_ZONE_ID")
-DNS_RECORD_NAME = os.getenv("DNS_RECORD_NAME")
-HEALTH_CHECK_URL = os.getenv("HEALTH_CHECK_URL")
 
-ec2 = boto3.client("ec2", region_name=AWS_REGION)
-route53 = boto3.client("route53")
-
-def is_healthy():
+def is_ec2_healthy():
     try:
-        response = requests.get(HEALTH_CHECK_URL, timeout=5)
-        return response.status_code == 200
-    except:
+        resp = requests.get(EC2_HEALTH_URL, timeout=5)
+        return resp.status_code == 200
+    except requests.RequestException:
         return False
 
-def start_instance(instance_id):
-    ec2.start_instances(InstanceIds=[instance_id])
-    print(f"Started instance {instance_id}")
-
-def stop_instance(instance_id):
-    ec2.stop_instances(InstanceIds=[instance_id])
-    print(f"Stopped instance {instance_id}")
-
-def get_instance_ip(instance_id):
-    reservations = ec2.describe_instances(InstanceIds=[instance_id])["Reservations"]
-    for reservation in reservations:
-        for instance in reservation["Instances"]:
-            return instance["PublicIpAddress"]
 
 def update_dns(ip):
-    route53.change_resource_record_sets(
-        HostedZoneId=HOSTED_ZONE_ID,
-        ChangeBatch={
-            "Changes": [
-                {
-                    "Action": "UPSERT",
-                    "ResourceRecordSet": {
-                        "Name": DNS_RECORD_NAME,
-                        "Type": "A",
-                        "TTL": 60,
-                        "ResourceRecords": [{"Value": ip}],
-                    }
-                }
-            ]
-        }
-    )
-    print(f"DNS updated to {ip}")
-
-def main():
-    if is_healthy():
-        print("Primary is healthy.")
-        stop_instance(BACKUP_INSTANCE_ID)
+    url = f"https://api.cloudflare.com/client/v4/zones/{ZONE_ID}/dns_records/{RECORD_ID}"
+    headers = {
+        "Authorization": f"Bearer {CLOUDFLARE_API_TOKEN}",
+        "Content-Type": "application/json"
+    }
+    payload = {
+        "type": "A",
+        "name": DNS_NAME,
+        "content": ip,
+        "ttl": 1,      
+        "proxied": True 
+    }
+    r = requests.put(url, headers=headers, json=payload)
+    if r.status_code == 200:
+        print(f" DNS updated to {ip}")
     else:
-        print("Primary failed. Switching to backup...")
-        start_instance(BACKUP_INSTANCE_ID)
-        ip = get_instance_ip(BACKUP_INSTANCE_ID)
-        update_dns(ip)
+        print(f"Failed to update DNS: {r.text}")
 
 if __name__ == "__main__":
-    main()
+    if is_ec2_healthy():
+        print("EC2 is healthy")
+        update_dns(EC2_IP)
+    else:
+        print("EC2 is down — Switching to local server")
+        update_dns(LOCAL_IP)
