@@ -1,5 +1,3 @@
-# deploying to this incase of a failure to cloud one
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -16,6 +14,7 @@ spec:
     spec:
       containers:
         - name: autohealing-app
-          image: "your-dockerhub-username/autohealing-app:latest" 
+          image: harshitrwt009/autohealing-app:latest  
           ports:
-            - containerPort: 80
+            - containerPort: 3001             # Your app listens on 3001
+

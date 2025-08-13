@@ -7,6 +7,6 @@ spec:
     app: autohealing-app
   ports:
     - protocol: TCP
-      port: 80
-      targetPort: 80
-  type: NodePort 
+      port: 80            
+      targetPort: 3001    
+  type: NodePort

@@ -1,18 +1,14 @@
-# Use Node.js image
-FROM node:18
 
-# Set working directory
+FROM node:18-alpine
+
 WORKDIR /app
 
-# Copy package.json and install dependencies
-COPY package.json .
-RUN npm install
+COPY package.json package-lock.json* ./
 
-# Copy the rest of the application
+RUN npm install 
+
 COPY . .
 
-# Expose port
-EXPOSE 3000
+EXPOSE 3001
 
-# Start the app
 CMD ["npm", "start"]

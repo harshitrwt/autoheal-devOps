@@ -1,7 +1,6 @@
 provider "aws" {
-  region = "us-east-1"  
+  region = "us-east-1"
 }
-
 
 resource "aws_security_group" "app_sg" {
   name        = "autohealing-app-sg"
@@ -29,12 +28,12 @@ resource "aws_security_group" "app_sg" {
   }
 }
 
-# Create an EC2 instance
 resource "aws_instance" "app_instance" {
-  ami           = "ami-0c02fb55956c7d316" 
-  instance_type = "t2.micro"
-  key_name      = "your-key-pair-name" 
-  security_groups = [aws_security_group.app_sg.name]
+  ami                         = "ami-0c02fb55956c7d316" 
+  instance_type               = "t2.micro"              
+  key_name                    = "your-existing-keypair-name"
+  security_groups             = [aws_security_group.app_sg.name]
+  associate_public_ip_address = true
 
   tags = {
     Name = "AutoHealingApp"
