@@ -1,3 +1,18 @@
 /scripts/.env
 node_modules/
 infra/cloud/invetory.ini
+
+# Terraform
+*.tfstate
+*.tfstate.backup
+.terraform/
+.terraform.lock.hcl
+
+# Ansible (if using dynamic inventories or vault)
+*.retry
+*.vault
+
+# OS/Editor specific (optional)
+*.swp
+*.swo
+.DS_Store
