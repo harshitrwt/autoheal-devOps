@@ -1,18 +1,23 @@
+# Ignore dotenv files
 /scripts/.env
+
+# Node.js
 node_modules/
-infra/cloud/invetory.ini
+
+# Fix Ansible inventory path (correct spelling)
+infra/cloud/inventory.ini  # Only if you want to ignore it
 
 # Terraform
+**/.terraform/               # ✅ Ignore all .terraform directories recursively
+**/.terraform.lock.hcl       # ✅ Ignore lock files in all subdirectories
 *.tfstate
 *.tfstate.backup
-.terraform/
-.terraform.lock.hcl
 
-# Ansible (if using dynamic inventories or vault)
+# Ansible
 *.retry
 *.vault
 
-# OS/Editor specific (optional)
+# OS/Editor
 *.swp
 *.swo
 .DS_Store
