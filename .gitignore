@@ -8,8 +8,8 @@ node_modules/
 infra/cloud/inventory.ini  # Only if you want to ignore it
 
 # Terraform
-**/.terraform/               # ✅ Ignore all .terraform directories recursively
-**/.terraform.lock.hcl       # ✅ Ignore lock files in all subdirectories
+**/.terraform/               
+**/.terraform.lock.hcl       
 *.tfstate
 *.tfstate.backup
 
