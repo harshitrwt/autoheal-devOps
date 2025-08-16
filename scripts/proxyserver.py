@@ -5,7 +5,7 @@ import time
 
 app = Flask(__name__)
 
-EC2_IP = "YOUR_EC2_PUBLIC_IP"            
+EC2_IP = "54.173.115.63"            
 NGROK_URL = "https://ngrok-url.ngrok.io"  
 
 EC2_HEALTH_URL = f"http://{EC2_IP}"
