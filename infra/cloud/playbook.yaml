@@ -4,7 +4,7 @@
     - name: Update apt packages
       apt:
         update_cache: yes
-      when: ansible_os_family == "Debian"  
+      when: ansible_os_family == "Debian"
 
     - name: Install Docker
       apt:
@@ -18,9 +18,20 @@
         enabled: yes
         state: started
 
+    - name: Install pip (Python package manager)
+      apt:
+        name: python3-pip
+        state: present
+      when: ansible_os_family == "Debian"
+
+    - name: Install Docker SDK for Python
+      pip:
+        name: docker
+        executable: pip3
+
     - name: Run app container
       docker_container:
         name: autohealing-app
-        image: "harshitrwt009/autohealing-app:latest" 
+        image: "harshitrwt009/autohealing-app:latest"
         ports:
-          - "80:80"
+          - "80:3001"

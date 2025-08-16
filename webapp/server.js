@@ -11,19 +11,19 @@ app.use(express.static(path.join(__dirname, 'public')));
 let todos = [];
 let idCounter = 1;
 
-// Get all todos
+
 app.get('/api/todos', (req, res) => {
   res.json(todos);
 });
 
-// Add new todo
+
 app.post('/api/todos', (req, res) => {
   const todo = { id: idCounter++, text: req.body.text, done: false };
   todos.push(todo);
   res.json(todo);
 });
 
-// Update todo
+
 app.put('/api/todos/:id', (req, res) => {
   const todo = todos.find(t => t.id === parseInt(req.params.id));
   if (todo) {
@@ -35,7 +35,7 @@ app.put('/api/todos/:id', (req, res) => {
   }
 });
 
-// Delete todo
+
 app.delete('/api/todos/:id', (req, res) => {
   todos = todos.filter(t => t.id !== parseInt(req.params.id));
   res.json({ message: 'Deleted' });

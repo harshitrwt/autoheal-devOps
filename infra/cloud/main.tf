@@ -29,7 +29,7 @@ resource "aws_security_group" "app_sg" {
 }
 
 resource "aws_instance" "app_instance" {
-  ami                         = "ami-08962a4068733a2b6" 
+  ami                         = "ami-0a313d6098716f372" 
   instance_type               = "t2.micro"              
   key_name                    = "autohealing-key"
   security_groups             = [aws_security_group.app_sg.name]
