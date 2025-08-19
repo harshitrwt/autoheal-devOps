@@ -78,4 +78,11 @@ Once the EC2 instance is deployed and configured, the following steps are automa
      ngrok http 3001
      ```
    - Useful for testing or routing traffic between AWS and Minikube
+  
+8. **Conclusion**
+   - When done, run the terraform command:
+     ```
+     terraform destroy
+     ```
+   - This will completely remove all your resources/instance from AWS.
 
