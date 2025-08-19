@@ -72,10 +72,10 @@ Once the EC2 instance is deployed and configured, the following steps are automa
      ssh -i ~/.ssh/your-key.pem ubuntu@<your-ec2-public-ip>
      ```
 
-7. **Optional: Tunnel traffic using ngrok**
+7. **Tunnel traffic using ngrok**
    - If needed, expose the app using:
      ```bash
-     ngrok http 80
+     ngrok http 3001
      ```
    - Useful for testing or routing traffic between AWS and Minikube
 
